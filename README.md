@@ -4,8 +4,8 @@ Grid search for hyper-parameter values is performed over the number of hidden la
 
 
 ![figure1](https://user-images.githubusercontent.com/1288719/164443353-addc0237-6b48-45b0-9cf1-da02d3896ce1.png)
-![figure2](https://user-images.githubusercontent.com/1288719/164443360-7ec8bd43-4ec7-4188-a43b-862a07383952.png)
-![figure3](https://user-images.githubusercontent.com/1288719/164443361-b2d8f10f-2813-43f6-9018-c85720b7c582.png)
+![figure2](https://user-images.githubusercontent.com/1288719/164443975-c32f37a5-d1c4-43f6-ab08-e8221727a434.png)
+![figure3](https://user-images.githubusercontent.com/1288719/164443978-791799c1-7e97-4019-954f-355e02c6c247.png)
 ![figure4](https://user-images.githubusercontent.com/1288719/164443365-275234c8-5a18-4481-b219-6cfd095d4e37.png)
-![figure5](https://user-images.githubusercontent.com/1288719/164443369-40e2e0db-d6a6-44c7-9c5e-0dec99618296.png)
+![figure5](https://user-images.githubusercontent.com/1288719/164443982-f6a2f7af-cb8b-4f6f-8018-d29310dbed8d.png)
 ![figure6](https://user-images.githubusercontent.com/1288719/164443309-6f50f203-cfe1-40c7-b09d-ebb32982f16e.png)
