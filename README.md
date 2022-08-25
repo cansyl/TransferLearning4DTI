@@ -24,6 +24,16 @@ Figure 6: Training loss comparison between training from scratch vs full fine-tu
 
 
 ![dataset_size](https://user-images.githubusercontent.com/1288719/186678429-611820c8-54a5-416f-87ad-e80c9dc92382.png)
+
+| Family | # of Targets | # of active compounds | # of inactive compounds | # of DTI | training dataset size | test dataset size |
+|---|:---:|:---:|:---:|:---:|:---:|:---:|
+| GPCR | 230 | 36,924 | 31,085 | 68,009 | 56,675 | 11,334 |
+| Ion Channel | 118 | 5,996 | 14,167 | 20,163 | 16,803 | 3,360 |
+| Kinase | 318 | 35,531 | 30,778 | 66,309 | 55,259 | 11,050 |
+| Nuclear Receptor | 37 | 5,099 | 6,668 | 11,767 | 9,807 | 1,960 |
+| Protease | 177 | 15,718 | 19,518 | 35,236 | 29,364 | 5,872 |
+| Transporter | 92 | 3,666 | 5,898 | 9,564 | 7,970 | 1,594 |
+
 ![results](https://user-images.githubusercontent.com/1288719/186680015-19905931-3bf2-4cd5-8d08-1fe482b29ea0.png)
 
 | Source family |  |  Transporter family (target) training dataset sizes: # of data points (% of the total dataset)  |  |  |  |  |  |  |
