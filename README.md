@@ -26,7 +26,7 @@ Figure 6: Training loss comparison between training from scratch vs full fine-tu
 ![dataset_size](https://user-images.githubusercontent.com/1288719/186678429-611820c8-54a5-416f-87ad-e80c9dc92382.png)
 ![results](https://user-images.githubusercontent.com/1288719/186680015-19905931-3bf2-4cd5-8d08-1fe482b29ea0.png)
 
-| Source family |  |  Transporter family (target) training dataset sizes: # of data points (% of the total dataset)  |
+| Source family |  |  Transporter family (target) training dataset sizes: # of data points (% of the total dataset)  |  |  |  |  |  |  |
 |:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
 |  |  | 5 (0.1%) | 35 (0.5%) | 75 (1%) | 395 (5%) | 795 (10%) | 1985 (25%) | 3980 (50%) |
 | GPCR | baseline | 0.160 | 0.312 | 0.329 | 0.446 | 0.510 | 0.525 | 0.531 |
