@@ -20,3 +20,8 @@ Figure 5: Mode 3, A shallow classifier is used instead of the classification lay
 
 ![figure6](https://user-images.githubusercontent.com/1288719/164443309-6f50f203-cfe1-40c7-b09d-ebb32982f16e.png)
 Figure 6: Training loss comparison between training from scratch vs full fine-tune for the Transporter family (10%).
+
+
+
+![dataset_size](https://user-images.githubusercontent.com/1288719/186678429-611820c8-54a5-416f-87ad-e80c9dc92382.png)
+![results](https://user-images.githubusercontent.com/1288719/186680015-19905931-3bf2-4cd5-8d08-1fe482b29ea0.png)
