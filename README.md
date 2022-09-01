@@ -33,6 +33,7 @@ Figure 6: Training loss comparison between training from scratch vs full fine-tu
 | Protease | 177 | 15,718 | 19,518 | 35,236 | 29,364 | 5,872 |
 | Transporter | 92 | 3,666 | 5,898 | 9,564 | 7,970 | 1,594 |
 
+Table 1: Number active and inactive compounds, training dataset size, and test dataset size for all protein families.
 
 <table class="tg">
 <thead>
@@ -309,3 +310,4 @@ Figure 6: Training loss comparison between training from scratch vs full fine-tu
   </tr>
 </tbody>
 </table>
+Table 2: Average  MCC values of baseline, shallow and three modes of transfer learning when the Transporter family is the target family and each of the other five families is used as the source family.
