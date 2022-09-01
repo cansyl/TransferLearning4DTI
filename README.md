@@ -35,6 +35,7 @@ Figure 6: Training loss comparison between training from scratch vs full fine-tu
 
 Table 1: Number active and inactive compounds, training dataset size, and test dataset size for all protein families.
 
+
 <table class="tg">
 <thead>
   <tr>
@@ -60,9 +61,9 @@ Table 1: Number active and inactive compounds, training dataset size, and test d
     <td class="tg-dvpl">0.312</td>
     <td class="tg-dvpl">0.329</td>
     <td class="tg-dvpl">0.446</td>
-    <td class="tg-6ic8">0.510</td>
-    <td class="tg-6ic8">0.525</td>
-    <td class="tg-6ic8">0.531</td>
+    <td style="font-weight:bold" class="tg-6ic8">0.510</td>
+    <td style="font-weight:bold" class="tg-6ic8">0.525</td>
+    <td style="font-weight:bold"class="tg-6ic8">0.531</td>
   </tr>
   <tr>
     <td class="tg-c3ow">Shallow</td>
@@ -76,7 +77,7 @@ Table 1: Number active and inactive compounds, training dataset size, and test d
   </tr>
   <tr>
     <td class="tg-c3ow">Mode1</td>
-    <td class="tg-6ic8">0.298</td>
+    <td style="font-weight:bold" class="tg-6ic8">0.298</td>
     <td class="tg-6ic8">0.413</td>
     <td class="tg-6ic8">0.420</td>
     <td class="tg-dvpl">0.448</td>
