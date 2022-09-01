@@ -60,9 +60,9 @@ Table 1: Number active and inactive compounds, training dataset size, and test d
     <td class="tg-dvpl">0.312</td>
     <td class="tg-dvpl">0.329</td>
     <td class="tg-dvpl">0.446</td>
-    <td class="tg-dvpl">0.510</td>
-    <td class="tg-dvpl">0.525</td>
-    <td class="tg-dvpl">0.531</td>
+    <td class="tg-6ic8">0.510</td>
+    <td class="tg-6ic8">0.525</td>
+    <td class="tg-6ic8">0.531</td>
   </tr>
   <tr>
     <td class="tg-c3ow">Shallow</td>
@@ -76,9 +76,9 @@ Table 1: Number active and inactive compounds, training dataset size, and test d
   </tr>
   <tr>
     <td class="tg-c3ow">Mode1</td>
-    <td class="tg-dvpl">0.298</td>
-    <td class="tg-dvpl">0.413</td>
-    <td class="tg-dvpl">0.420</td>
+    <td class="tg-6ic8">0.298</td>
+    <td class="tg-6ic8">0.413</td>
+    <td class="tg-6ic8">0.420</td>
     <td class="tg-dvpl">0.448</td>
     <td class="tg-dvpl">0.467</td>
     <td class="tg-dvpl">0.480</td>
@@ -99,7 +99,7 @@ Table 1: Number active and inactive compounds, training dataset size, and test d
     <td class="tg-dvpl">0.118</td>
     <td class="tg-dvpl">0.323</td>
     <td class="tg-dvpl">0.376</td>
-    <td class="tg-dvpl">0.467</td>
+    <td class="tg-6ic8">0.467</td>
     <td class="tg-dvpl">0.505</td>
     <td class="tg-dvpl">0.522</td>
     <td class="tg-dvpl">0.527</td>
@@ -111,8 +111,8 @@ Table 1: Number active and inactive compounds, training dataset size, and test d
     <td class="tg-dvpl">0.338</td>
     <td class="tg-dvpl">0.316</td>
     <td class="tg-dvpl">0.449</td>
-    <td class="tg-dvpl">0.511</td>
-    <td class="tg-dvpl">0.527</td>
+    <td class="tg-6ic8">0.511</td>
+    <td class="tg-6ic8">0.527</td>
     <td class="tg-dvpl">0.528</td>
   </tr>
   <tr>
@@ -123,14 +123,14 @@ Table 1: Number active and inactive compounds, training dataset size, and test d
     <td class="tg-dvpl">0.465</td>
     <td class="tg-dvpl">0.499</td>
     <td class="tg-dvpl">0.521</td>
-    <td class="tg-dvpl">0.530</td>
+    <td class="tg-6ic8">0.530</td>
   </tr>
   <tr>
     <td class="tg-c3ow">Mode1</td>
-    <td class="tg-dvpl">0.325</td>
+    <td class="tg-6ic8">0.325</td>
     <td class="tg-dvpl">0.373</td>
-    <td class="tg-dvpl">0.405</td>
-    <td class="tg-dvpl">0.471</td>
+    <td class="tg-6ic8">0.405</td>
+    <td class="tg-6ic8">0.471</td>
     <td class="tg-dvpl">0.491</td>
     <td class="tg-dvpl">0.513</td>
     <td class="tg-dvpl">0.528</td>
@@ -148,12 +148,12 @@ Table 1: Number active and inactive compounds, training dataset size, and test d
   <tr>
     <td class="tg-c3ow">Mode3</td>
     <td class="tg-dvpl">0.258</td>
-    <td class="tg-dvpl">0.382</td>
+    <td class="tg-6ic8">0.382</td>
     <td class="tg-dvpl">0.376</td>
     <td class="tg-dvpl">0.465</td>
     <td class="tg-dvpl">0.497</td>
     <td class="tg-dvpl">0.521</td>
-    <td class="tg-dvpl">0.530</td>
+    <td class="tg-6ic8">0.530</td>
   </tr>
   <tr>
     <td class="tg-c3ow" rowspan="5">Kinase</td>
@@ -162,9 +162,9 @@ Table 1: Number active and inactive compounds, training dataset size, and test d
     <td class="tg-dvpl">0.326</td>
     <td class="tg-dvpl">0.315</td>
     <td class="tg-dvpl">0.449</td>
-    <td class="tg-dvpl">0.511</td>
-    <td class="tg-dvpl">0.525</td>
-    <td class="tg-dvpl">0.532</td>
+    <td class="tg-6ic8">0.511</td>
+    <td class="tg-6ic8">0.525</td>
+    <td class="tg-6ic8">0.532</td>
   </tr>
   <tr>
     <td class="tg-c3ow">Shallow</td>
@@ -179,8 +179,8 @@ Table 1: Number active and inactive compounds, training dataset size, and test d
   <tr>
     <td class="tg-c3ow">Mode1</td>
     <td class="tg-dvpl">0.358</td>
-    <td class="tg-dvpl">0.407</td>
-    <td class="tg-dvpl">0.415</td>
+    <td class="tg-6ic8">0.407</td>
+    <td class="tg-6ic8">0.415</td>
     <td class="tg-dvpl">0.471</td>
     <td class="tg-dvpl">0.487</td>
     <td class="tg-dvpl">0.494</td>
@@ -188,8 +188,8 @@ Table 1: Number active and inactive compounds, training dataset size, and test d
   </tr>
   <tr>
     <td class="tg-c3ow">Mode2</td>
-    <td class="tg-dvpl">0.369</td>
-    <td class="tg-dvpl">0.407</td>
+    <td class="tg-6ic8">0.369</td>
+    <td class="tg-6ic8">0.407</td>
     <td class="tg-dvpl">0.413</td>
     <td class="tg-dvpl">0.466</td>
     <td class="tg-dvpl">0.487</td>
@@ -201,9 +201,9 @@ Table 1: Number active and inactive compounds, training dataset size, and test d
     <td class="tg-dvpl">0.233</td>
     <td class="tg-dvpl">0.355</td>
     <td class="tg-dvpl">0.397</td>
-    <td class="tg-dvpl">0.479</td>
+    <td class="tg-6ic8">0.479</td>
     <td class="tg-dvpl">0.507</td>
-    <td class="tg-dvpl">0.525</td>
+    <td class="tg-6ic8">0.525</td>
     <td class="tg-dvpl">0.528</td>
   </tr>
   <tr>
@@ -213,16 +213,16 @@ Table 1: Number active and inactive compounds, training dataset size, and test d
     <td class="tg-dvpl">0.343</td>
     <td class="tg-dvpl">0.325</td>
     <td class="tg-dvpl">0.451</td>
-    <td class="tg-dvpl">0.512</td>
-    <td class="tg-dvpl">0.526</td>
-    <td class="tg-dvpl">0.531</td>
+    <td class="tg-6ic8">0.512</td>
+    <td class="tg-6ic8">0.526</td>
+    <td class="tg-6ic8">0.531</td>
   </tr>
   <tr>
     <td class="tg-0pky">Shallow</td>
     <td class="tg-dvpl">0.242</td>
     <td class="tg-dvpl">0.336</td>
     <td class="tg-dvpl">0.346</td>
-    <td class="tg-dvpl">0.466</td>
+    <td class="tg-6ic8">0.466</td>
     <td class="tg-dvpl">0.498</td>
     <td class="tg-dvpl">0.520</td>
     <td class="tg-dvpl">0.523</td>
@@ -230,8 +230,8 @@ Table 1: Number active and inactive compounds, training dataset size, and test d
   <tr>
     <td class="tg-0pky">Mode1</td>
     <td class="tg-dvpl">0.250</td>
-    <td class="tg-dvpl">0.346</td>
-    <td class="tg-dvpl">0.381</td>
+    <td class="tg-6ic8">0.346</td>
+    <td class="tg-6ic8">0.381</td>
     <td class="tg-dvpl">0.455</td>
     <td class="tg-dvpl">0.485</td>
     <td class="tg-dvpl">0.496</td>
@@ -239,7 +239,7 @@ Table 1: Number active and inactive compounds, training dataset size, and test d
   </tr>
   <tr>
     <td class="tg-0pky">Mode2</td>
-    <td class="tg-dvpl">0.254</td>
+    <td class="tg-6ic8">0.254</td>
     <td class="tg-dvpl">0.308</td>
     <td class="tg-dvpl">0.359</td>
     <td class="tg-dvpl">0.440</td>
@@ -264,16 +264,16 @@ Table 1: Number active and inactive compounds, training dataset size, and test d
     <td class="tg-dvpl">0.316</td>
     <td class="tg-dvpl">0.325</td>
     <td class="tg-dvpl">0.447</td>
-    <td class="tg-dvpl">0.510</td>
-    <td class="tg-dvpl">0.525</td>
-    <td class="tg-dvpl">0.531</td>
+    <td class="tg-6ic8">0.510</td>
+    <td class="tg-6ic8">0.525</td>
+    <td class="tg-6ic8">0.531</td>
   </tr>
   <tr>
     <td class="tg-0pky">Shallow</td>
     <td class="tg-dvpl">0.118</td>
     <td class="tg-dvpl">0.328</td>
     <td class="tg-dvpl">0.357</td>
-    <td class="tg-dvpl">0.464</td>
+    <td class="tg-6ic8">0.464</td>
     <td class="tg-dvpl">0.498</td>
     <td class="tg-dvpl">0.520</td>
     <td class="tg-dvpl">0.522</td>
@@ -281,8 +281,8 @@ Table 1: Number active and inactive compounds, training dataset size, and test d
   <tr>
     <td class="tg-0pky">Mode1</td>
     <td class="tg-dvpl">0.291</td>
-    <td class="tg-dvpl">0.361</td>
-    <td class="tg-dvpl">0.404</td>
+    <td class="tg-6ic8">0.361</td>
+    <td class="tg-6ic8">0.404</td>
     <td class="tg-dvpl">0.454</td>
     <td class="tg-dvpl">0.478</td>
     <td class="tg-dvpl">0.497</td>
@@ -290,7 +290,7 @@ Table 1: Number active and inactive compounds, training dataset size, and test d
   </tr>
   <tr>
     <td class="tg-0pky">Mode2</td>
-    <td class="tg-dvpl">0.310</td>
+    <td class="tg-6ic8">0.310</td>
     <td class="tg-dvpl">0.340</td>
     <td class="tg-dvpl">0.400</td>
     <td class="tg-dvpl">0.449</td>
