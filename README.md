@@ -61,7 +61,7 @@ Table 1: Number active and inactive compounds, training dataset size, and test d
     <td class="tg-dvpl">0.312</td>
     <td class="tg-dvpl">0.329</td>
     <td class="tg-dvpl">0.446</td>
-    <td style="font-weight:bold" class="tg-6ic8">**0.510**</td>
+    <td style="font-weight:bold" class="tg-6ic8">0.510</td>
     <td style="font-weight:bold" class="tg-6ic8">0.525</td>
     <td style="font-weight:bold"class="tg-6ic8">0.531</td>
   </tr>
