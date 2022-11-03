@@ -1,11 +1,10 @@
-
 from sklearn.ensemble import RandomForestClassifier
 from sklearn import svm
 from sklearn.ensemble import GradientBoostingClassifier
 import warnings
 from evaluation_metrics import prec_rec_f1_acc_mcc, get_list_of_scores
 import argparse
-
+from sklearn.metrics import roc_curve
 
 import json
 import os
@@ -25,11 +24,26 @@ parser.add_argument(
     help='the name of the experiment (default: my_experiment)')
 
 parser.add_argument(
-    '--d',
+    # '--compound-features',
+    '--cf',
+    type=str,
+    default="chemprop",
+    metavar='CF',
+    help='compound features separated by underscore character (default: chemprop)')
+
+parser.add_argument(
+    '--sd',
+    type=str,
+    default="kinase",
+    metavar='SD',
+    help='the name of the source dataset (default: kinase)')
+
+parser.add_argument(
+    '--td',
     type=str,
     default="transporter",
-    metavar='D',
-    help='the name of the dataset (default: transporter)')
+    metavar='TD',
+    help='the name of the target dataset (default: transporter)')
 
 parser.add_argument(
     '--ss',
@@ -42,7 +56,7 @@ parser.add_argument(
     # '--extracted-layer`',
     '--el',
     type=str,
-    default="1",
+    default="0",
     metavar='EL',
     help='layer to be extracted (default: 1)')
 
@@ -63,12 +77,28 @@ parser.add_argument(
     help='transfer learning flag (default: 0)')
 
 parser.add_argument(
+    # '--setting',
+    '--setting',
+    type=int,
+    default=1,
+    metavar='SETTING',
+    help='Determines the setting (1: train_val_test, 2:train_test) (default: 1)')
+
+parser.add_argument(
     # '--input-path`',
     '--ip',
     type=str,
     default="/home/adalkiran/PycharmProjects/mainProteinFamilyClassification",
     metavar='IP',
     help='input path (default: /home/adalkiran/PycharmProjects/mainProteinFamilyClassification)')
+
+parser.add_argument(
+    # '--output-path`',
+    '--op',
+    type=str,
+    default="/home/adalkiran/PycharmProjects/mainProteinFamilyClassification",
+    metavar='OP',
+    help='output path (default: /home/adalkiran/PycharmProjects/mainProteinFamilyClassification)')
 
 def read_tsv(FileName):
     featuresandClass = []
@@ -119,6 +149,13 @@ def get_compound_dict_feature_vector(training_dataset_path, feature_lst):
 
     return features_dict
 
+def Find_Optimal_Cutoff(target, predicted):
+    fpr, tpr, threshold = roc_curve(target, predicted)
+    i = np.arange(len(tpr))
+    roc = pd.DataFrame({'tf' : pd.Series(tpr-(1-fpr), index=i), 'threshold' : pd.Series(threshold, index=i)})
+    roc_t = roc.iloc[(roc.tf-0).abs().argsort()[:1]]
+
+    return list(roc_t['threshold'])
 if __name__ == '__main__':
 
     args = parser.parse_args()
@@ -126,18 +163,22 @@ if __name__ == '__main__':
     subset_size = args.ss
     subset_flag = args.sf
     input_path = args.ip
+    output_path = args.op
     extracted_layer = args.el
     experiment_name = args.en
-    target_dataset = args.d
+    source_dataset = args.sd
+    target_dataset = args.td
     tl_flag = args.tlf
+    setting = args.setting
+    comp_feature = args.cf
 
-    arguments = [str(argm) for argm in [target_dataset, experiment_name, subset_flag, extracted_layer, subset_size]]
+    arguments = [str(argm) for argm in [source_dataset, target_dataset, comp_feature, experiment_name, subset_flag, extracted_layer, subset_size, setting, tl_flag]]
     str_arguments = "-".join(arguments)
     print("Arguments:", str_arguments)
 
     training_files_path = "{}/{}".format(input_path, "training_files")
     training_dataset_path = "{}/{}".format(training_files_path, target_dataset)
-    result_files_path = "{}/{}".format(input_path, "result_files")
+    result_files_path = "{}/{}".format(output_path, "result_files")
 
     if subset_flag == 0:
         exp_path = os.path.join(result_files_path, target_dataset)
@@ -161,150 +202,253 @@ if __name__ == '__main__':
         else:
             folds = json.load(
                 open(training_dataset_path + "/dataSubset" + str(subset_size) + "/folds/train_fold_setting1.txt"))
-        comp_feature_list = ["ecfp4"]
+
+        if comp_feature == "ecfp4":
+            comp_feature_list = ["ecfp4"]
+        elif comp_feature == "chemprop":
+            comp_feature_list = ["chemprop"]
         features_dict = get_compound_dict_feature_vector(training_dataset_path, comp_feature_list)
         bioactiviy_dataset = read_bioactivity_tsv(training_dataset_path + "/comp_targ_binary.tsv")
+
         test_indices = json.load(open(training_dataset_path + "/data/folds/test_fold_setting1.txt"))
 
-    avg_svm_val_mcc, avg_rf_val_mcc, avg_gb_val_mcc, avg_svm_test_mcc, avg_rf_test_mcc, avg_gb_test_mcc = 0, 0, 0, 0, 0, 0
-    for fold in range(5):
-        print("FOLD:", fold + 1)
+    if setting == 1:
+        avg_svm_val_mcc, avg_rf_val_mcc, avg_gb_val_mcc, avg_svm_test_mcc, avg_rf_test_mcc, avg_gb_test_mcc = 0, 0, 0, 0, 0, 0
+        for fold in range(5):
+            print("FOLD:", fold + 1)
+
+            if tl_flag == 1:
+                if subset_flag == 0:
+                    features_path = training_dataset_path + "/extracted_feature_vectors/layer" + \
+                                    extracted_layer + "/fold" + str(fold)
+                else:
+                    features_path = training_dataset_path + "/dataSubset" + str(subset_size) + \
+                                "/extracted_feature_vectors/layer" + extracted_layer + "/fold" + str(fold)
+
+                X_train = np.loadtxt(features_path + "/train.out", delimiter=',')
+                y_train = np.loadtxt(features_path + "/trainClass.out", delimiter=',')
+
+                X_val = np.loadtxt(features_path + "/val.out", delimiter=',')
+                y_val = np.loadtxt(features_path + "/valClass.out", delimiter=',')
+
+                X_test = np.loadtxt(features_path + "/test.out", delimiter=',')
+                y_test = np.loadtxt(features_path + "/testClass.out", delimiter=',')
+
+            else:
+                X_val, y_val = [], []
+                for ind in folds[fold]:
+                    X_val.append(features_dict[bioactiviy_dataset[ind][1]])
+                    y_val.append(int(bioactiviy_dataset[ind][2]))
+
+
+                X_train, y_train = [], []
+                for j in range(5):
+                    if fold == j:
+                        continue
+
+                    else:
+                        for ind in folds[j]:
+                            X_train.append(features_dict[bioactiviy_dataset[ind][1]])
+                            y_train.append(int(bioactiviy_dataset[ind][2]))
+
+                X_test, y_test = [], []
+                for ind in test_indices:
+                    X_test.append(features_dict[bioactiviy_dataset[ind][1]])
+                    y_test.append(int(bioactiviy_dataset[ind][2]))
+
+            svm_classifier = svm.SVC()  # Linear Kernel
+            print("SVM Training")
+            # Train the model using the training sets
+            svm_classifier.fit(X_train, y_train)
+            print("SVM Validate")
+
+            # Predict the response for test dataset
+            y_pred = svm_classifier.predict(X_val)
+            svm_val_perf_dict = prec_rec_f1_acc_mcc(y_val, y_pred)
+            print(svm_val_perf_dict)
+            print("SVM Test")
+
+            y_pred = svm_classifier.predict(X_test)
+            svm_test_perf_dict = prec_rec_f1_acc_mcc(y_test, y_pred)
+            print(svm_test_perf_dict)
+
+            rf_classifier = RandomForestClassifier()  # Linear Kernel
+            print("RF Training")
+
+            # Train the model using the training sets
+            rf_classifier.fit(X_train, y_train)
+            print("RF Validate")
+
+            # Predict the response for test dataset
+            y_pred = rf_classifier.predict(X_val)
+            rf_val_perf_dict = prec_rec_f1_acc_mcc(y_val, y_pred)
+            print(rf_val_perf_dict)
+            print("RF Test")
+            y_pred = rf_classifier.predict(X_test)
+            rf_test_perf_dict = prec_rec_f1_acc_mcc(y_test, y_pred)
+            print(rf_test_perf_dict)
+
+            gb_classifier = GradientBoostingClassifier()  # Linear Kernel
+            print("GB Training")
+
+            # Train the model using the training sets
+            gb_classifier.fit(X_train, y_train)
+            print("GB Validate")
+
+            # Predict the response for test dataset
+            y_pred = gb_classifier.predict(X_val)
+            gb_val_perf_dict = prec_rec_f1_acc_mcc(y_val, y_pred)
+            print(gb_val_perf_dict)
+
+            print("GB Test")
+            y_pred = gb_classifier.predict(X_test)
+            gb_test_perf_dict = prec_rec_f1_acc_mcc(y_test, y_pred)
+            print(gb_test_perf_dict)
+
+            avg_svm_val_mcc += svm_val_perf_dict["MCC"]
+            avg_svm_test_mcc += svm_test_perf_dict["MCC"]
+
+            avg_rf_val_mcc += rf_val_perf_dict["MCC"]
+            avg_rf_test_mcc += rf_test_perf_dict["MCC"]
+
+            avg_gb_val_mcc += gb_val_perf_dict["MCC"]
+            avg_gb_test_mcc += gb_test_perf_dict["MCC"]
+
+            score_list = get_list_of_scores()
+            for scr in score_list:
+                svm_best_val_test_result_fl.write("Val {}:\t{}\n".format(scr, svm_val_perf_dict[scr]))
+            for scr in score_list:
+                svm_best_val_test_result_fl.write("Test {}:\t{}\n".format(scr, svm_test_perf_dict[scr]))
+            for scr in score_list:
+                rf_best_val_test_result_fl.write("Val {}:\t{}\n".format(scr, rf_val_perf_dict[scr]))
+            for scr in score_list:
+                rf_best_val_test_result_fl.write("Test {}:\t{}\n".format(scr, rf_test_perf_dict[scr]))
+            for scr in score_list:
+                gb_best_val_test_result_fl.write("Val {}:\t{}\n".format(scr, gb_val_perf_dict[scr]))
+            for scr in score_list:
+                gb_best_val_test_result_fl.write("Test {}:\t{}\n".format(scr, gb_test_perf_dict[scr]))
+            if fold == 4:
+                avg_svm_val_mcc /= 5
+                avg_svm_test_mcc /= 5
+
+                avg_rf_val_mcc /= 5
+                avg_rf_test_mcc /= 5
+
+                avg_gb_val_mcc /= 5
+                avg_gb_test_mcc /= 5
+
+                svm_best_val_test_result_fl.write("Val avg mcc:\t{}\n".format(avg_svm_val_mcc))
+                svm_best_val_test_result_fl.write("Test avg mcc:\t{}\n".format(avg_svm_test_mcc))
+
+                rf_best_val_test_result_fl.write("Val avg mcc:\t{}\n".format(avg_rf_val_mcc))
+                rf_best_val_test_result_fl.write("Test avg mcc:\t{}\n".format(avg_rf_test_mcc))
+
+                gb_best_val_test_result_fl.write("Val avg mcc:\t{}\n".format(avg_gb_val_mcc))
+                gb_best_val_test_result_fl.write("Test avg mcc:\t{}\n".format(avg_gb_test_mcc))
+
+        svm_best_val_test_result_fl.close()
+        rf_best_val_test_result_fl.close()
+        gb_best_val_test_result_fl.close()
+
+    if setting == 2:
 
         if tl_flag == 1:
             if subset_flag == 0:
                 features_path = training_dataset_path + "/extracted_feature_vectors/layer" + \
-                                extracted_layer + "/fold" + str(fold)
+                                extracted_layer
             else:
                 features_path = training_dataset_path + "/dataSubset" + str(subset_size) + \
-                            "/extracted_feature_vectors/layer" + extracted_layer + "/fold" + str(fold)
+                            "/extracted_feature_vectors/layer" + extracted_layer
 
             X_train = np.loadtxt(features_path + "/train.out", delimiter=',')
             y_train = np.loadtxt(features_path + "/trainClass.out", delimiter=',')
-
-            X_val = np.loadtxt(features_path + "/val.out", delimiter=',')
-            y_val = np.loadtxt(features_path + "/valClass.out", delimiter=',')
 
             X_test = np.loadtxt(features_path + "/test.out", delimiter=',')
             y_test = np.loadtxt(features_path + "/testClass.out", delimiter=',')
 
         else:
-            X_val, y_val = [], []
-            for ind in folds[fold]:
-                X_val.append(features_dict[bioactiviy_dataset[ind][1]])
-                y_val.append(int(bioactiviy_dataset[ind][2]))
-
 
             X_train, y_train = [], []
-            for j in range(5):
-                if fold == j:
-                    continue
-
-                else:
-                    for ind in folds[j]:
+            if subset_flag == 0:
+                for i in range(5):
+                    for ind in folds[i]:
                         X_train.append(features_dict[bioactiviy_dataset[ind][1]])
                         y_train.append(int(bioactiviy_dataset[ind][2]))
+            else:
+                for ind in folds:
+                    X_train.append(features_dict[bioactiviy_dataset[ind][1]])
+                    y_train.append(int(bioactiviy_dataset[ind][2]))
 
             X_test, y_test = [], []
             for ind in test_indices:
                 X_test.append(features_dict[bioactiviy_dataset[ind][1]])
                 y_test.append(int(bioactiviy_dataset[ind][2]))
 
-        # print(len(X_train))
-        # print(len(X_val))
-        # print(len(X_test))
-        # print(classes)
+
         svm_classifier = svm.SVC()  # Linear Kernel
-        print("SVM Training")
         # Train the model using the training sets
         svm_classifier.fit(X_train, y_train)
-        print("SVM Training End")
-        print("SVM Validate")
-
-        # Predict the response for test dataset
-        y_pred = svm_classifier.predict(X_val)
-        svm_val_perf_dict = prec_rec_f1_acc_mcc(y_val, y_pred)
-        print(svm_val_perf_dict)
         print("SVM Test")
 
         y_pred = svm_classifier.predict(X_test)
-        svm_test_perf_dict = prec_rec_f1_acc_mcc(y_test, y_pred)
+        svm_test_perf_dict = prec_rec_f1_acc_mcc(y_test, y_pred, 2)
+        svm_threshold = Find_Optimal_Cutoff(y_test, y_pred)
+        svm = 0
+        for pred in y_pred:
+            if pred >= svm_threshold[0]:
+                svm += 1
+        print("{:.3f}\t{:}".format(float(svm_threshold[0]), svm))
         print(svm_test_perf_dict)
 
         rf_classifier = RandomForestClassifier()  # Linear Kernel
-        print("RF Training")
 
         # Train the model using the training sets
         rf_classifier.fit(X_train, y_train)
-        print("RF Validate")
 
-        # Predict the response for test dataset
-        y_pred = rf_classifier.predict(X_val)
-        rf_val_perf_dict = prec_rec_f1_acc_mcc(y_val, y_pred)
-        print(rf_val_perf_dict)
         print("RF Test")
         y_pred = rf_classifier.predict(X_test)
-        rf_test_perf_dict = prec_rec_f1_acc_mcc(y_test, y_pred)
+        rf_test_perf_dict = prec_rec_f1_acc_mcc(y_test, y_pred, 2)
+        rf_threshold = Find_Optimal_Cutoff(y_test, y_pred)
+        rf = 0
+        for pred in y_pred:
+            if pred >= rf_threshold[0]:
+                rf += 1
+        print("{:.3f}\t{:}".format(float(rf_threshold[0]), rf))
         print(rf_test_perf_dict)
 
         gb_classifier = GradientBoostingClassifier()  # Linear Kernel
-        print("GB Training")
 
         # Train the model using the training sets
         gb_classifier.fit(X_train, y_train)
-        print("GB Validate")
-
-        # Predict the response for test dataset
-        y_pred = gb_classifier.predict(X_val)
-        gb_val_perf_dict = prec_rec_f1_acc_mcc(y_val, y_pred)
-        print(gb_val_perf_dict)
 
         print("GB Test")
         y_pred = gb_classifier.predict(X_test)
-        gb_test_perf_dict = prec_rec_f1_acc_mcc(y_test, y_pred)
+        gb_test_perf_dict = prec_rec_f1_acc_mcc(y_test, y_pred, 2)
+        gb_threshold = Find_Optimal_Cutoff(y_test, y_pred)
+        gb = 0
+        for pred in y_pred:
+            if pred >= gb_threshold[0]:
+                gb += 1
+        print("{:.3f}\t{:}".format(float(gb_threshold[0]), gb))
         print(gb_test_perf_dict)
 
-        avg_svm_val_mcc += svm_val_perf_dict["MCC"]
-        avg_svm_test_mcc += svm_test_perf_dict["MCC"]
+        score_list = get_list_of_scores(2)
 
-        avg_rf_val_mcc += rf_val_perf_dict["MCC"]
-        avg_rf_test_mcc += rf_test_perf_dict["MCC"]
-
-        avg_gb_val_mcc += gb_val_perf_dict["MCC"]
-        avg_gb_test_mcc += gb_test_perf_dict["MCC"]
-
-        score_list = get_list_of_scores()
-        for scr in score_list:
-            svm_best_val_test_result_fl.write("Val {}:\t{}\n".format(scr, svm_val_perf_dict[scr]))
         for scr in score_list:
             svm_best_val_test_result_fl.write("Test {}:\t{}\n".format(scr, svm_test_perf_dict[scr]))
-        for scr in score_list:
-            rf_best_val_test_result_fl.write("Val {}:\t{}\n".format(scr, rf_val_perf_dict[scr]))
+
         for scr in score_list:
             rf_best_val_test_result_fl.write("Test {}:\t{}\n".format(scr, rf_test_perf_dict[scr]))
-        for scr in score_list:
-            gb_best_val_test_result_fl.write("Val {}:\t{}\n".format(scr, gb_val_perf_dict[scr]))
+
         for scr in score_list:
             gb_best_val_test_result_fl.write("Test {}:\t{}\n".format(scr, gb_test_perf_dict[scr]))
-        if fold == 4:
-            avg_svm_val_mcc /= 5
-            avg_svm_test_mcc /= 5
 
-            avg_rf_val_mcc /= 5
-            avg_rf_test_mcc /= 5
+        svm_best_val_test_result_fl.write("Test mcc:\t{}\n".format(svm_test_perf_dict["MCC"]))
 
-            avg_gb_val_mcc /= 5
-            avg_gb_test_mcc /= 5
+        rf_best_val_test_result_fl.write("Test mcc:\t{}\n".format(rf_test_perf_dict["MCC"]))
 
-            svm_best_val_test_result_fl.write("Val avg mcc:\t{}\n".format(avg_svm_val_mcc))
-            svm_best_val_test_result_fl.write("Test avg mcc:\t{}\n".format(avg_svm_test_mcc))
-
-            rf_best_val_test_result_fl.write("Val avg mcc:\t{}\n".format(avg_rf_val_mcc))
-            rf_best_val_test_result_fl.write("Test avg mcc:\t{}\n".format(avg_rf_test_mcc))
-
-            gb_best_val_test_result_fl.write("Val avg mcc:\t{}\n".format(avg_gb_val_mcc))
-            gb_best_val_test_result_fl.write("Test avg mcc:\t{}\n".format(avg_gb_test_mcc))
+        gb_best_val_test_result_fl.write("Test mcc:\t{}\n".format(gb_test_perf_dict["MCC"]))
 
     svm_best_val_test_result_fl.close()
     rf_best_val_test_result_fl.close()
     gb_best_val_test_result_fl.close()
-

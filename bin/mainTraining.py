@@ -1,7 +1,6 @@
 import argparse
 from feedForwardDNNDTIFiveFold import five_fold_training, training_test, training
-from extractFeatureDNNDTIV2 import extract_features
-
+from extractFeatureDNNDTIV2 import extract_features, extract_features_train_test
 
 parser = argparse.ArgumentParser(description='feedForwardDNN arguments')
 
@@ -15,26 +14,18 @@ parser.add_argument(
 parser.add_argument(
     '--chln',
     type=str,
-    default="4096_1024",
+    default="1200_300",
     metavar='HLN',
-    help='number of neurons in hidden layers of compound(default: 4096_1024)')
-
-parser.add_argument(
-    '--thln',
-    type=str,
-    default="40_10",
-    metavar='HLN',
-    help='number of neurons in hidden layers of target(default: 40_10)')
+    help='number of neurons in hidden layers of compound(default: 1200_100)')
 
 parser.add_argument(
     '--lr',
     type=float,
     default=0.0001,
     metavar='LR',
-    help='learning rate (default: 0.0001)')
+    help='learning rate (default: 0.002)')
 
 parser.add_argument(
-    # '--batch-size',
     '--bs',
     type=int,
     default=256,
@@ -42,7 +33,6 @@ parser.add_argument(
     help='batch size (default: 256)')
 
 parser.add_argument(
-    # '--target-data',
     '--td',
     type=str,
     default="transporter",
@@ -50,7 +40,6 @@ parser.add_argument(
     help='the name of the target dataset (default: transporter)')
 
 parser.add_argument(
-    # '--source-data',
     '--sd',
     type=str,
     default="kinase",
@@ -83,10 +72,9 @@ parser.add_argument(
     type=int,
     default=100,
     metavar='EPOCH',
-    help='Number of epochs (default: 50)')
+    help='Number of epochs (default: 100)')
 
 parser.add_argument(
-    # '--subset-flag',
     '--sf',
     type=int,
     default=0,
@@ -94,7 +82,6 @@ parser.add_argument(
     help='subset flag (default: 0)')
 
 parser.add_argument(
-    # '--transfer-learning-flag',
     '--tlf',
     type=int,
     default=0,
@@ -102,7 +89,6 @@ parser.add_argument(
     help='transfer learning flag (default: 0)')
 
 parser.add_argument(
-    # '--freeze-flag',
     '--ff',
     type=int,
     default=0,
@@ -110,7 +96,6 @@ parser.add_argument(
     help='freeze flag (default: 0)')
 
 parser.add_argument(
-    # '--frozen-layers`',
     '--fl',
     type=str,
     default="1",
@@ -118,7 +103,6 @@ parser.add_argument(
     help='hidden layers to be frozen (default: 1)')
 
 parser.add_argument(
-    # '--extracted-layer`',
     '--el',
     type=str,
     default="1",
@@ -126,7 +110,6 @@ parser.add_argument(
     help='layer to be extracted (default: 0)')
 
 parser.add_argument(
-    # '--subset-size`',
     '--ss',
     type=int,
     default=10,
@@ -134,31 +117,21 @@ parser.add_argument(
     help='subset size (default: 10)')
 
 parser.add_argument(
-    # '--compound-features',
     '--cf',
     type=str,
-    default="ecfp4",
+    default="chemprop",
     metavar='CF',
     help='compound features separated by underscore character (default: ecfp4)')
 
 parser.add_argument(
-    # '--target-features',
-    '--tf',
-    type=str,
-    default="AAC",
-    metavar='TF',
-    help='target features separated by underscore character (default: AAC)')
-
-parser.add_argument(
-    # '--setting',
     '--setting',
     type=int,
     default=1,
     metavar='SETTING',
-    help='Determines the setting (1: train_val_test, 2:after removing some targets, 3:training_test, 4:only training) (default: 1)')
+    help='Determines the setting (1: train_val_test, 2:extract layer train_val_test, 3:training_test, 4:only training, '
+         '5:extract layer train and test) (default: 1)')
 
 parser.add_argument(
-    # '--external-test',
     '--et',
     type=str,
     default="-",
@@ -166,7 +139,6 @@ parser.add_argument(
     help='external test dataset (default: -)')
 
 parser.add_argument(
-    # '--input-path`',
     '--ip',
     type=str,
     default="/home/adalkiran/PycharmProjects/mainProteinFamilyClassification",
@@ -174,34 +146,43 @@ parser.add_argument(
     help='input path (default: /home/adalkiran/PycharmProjects/mainProteinFamilyClassification)')
 
 parser.add_argument(
-    # '--output-path`',
     '--op',
     type=str,
     default="/home/adalkiran/PycharmProjects/mainProteinFamilyClassification",
     metavar='OP',
     help='output path (default: /home/adalkiran/PycharmProjects/mainProteinFamilyClassification)')
 
+parser.add_argument(
+    '--nc',
+    type=int,
+    default=2,
+    metavar='NC',
+    help='number of result classes (default: 2)')
 
 if __name__ == "__main__":
     args = parser.parse_args()
     print(args)
     comp_hidden_layer_neurons = [int(num) for num in args.chln.split("_")]
-    tar_hidden_layer_neurons = [int(num) for num in args.thln.split("_")]
 
     if args.setting == 3:
-        training_test(args.td, args.sd, (args.cf).split("_"), (args.tf).split("_"), comp_hidden_layer_neurons, tar_hidden_layer_neurons, args.lr, args.bs,
-                               args.model, args.do, args.en, args.epoch, args.sf, args.tlf, args.ff, args.fl, args.ss,
-                               args.ip, args.op, args.setting)
-    if args.setting == 4:
-        training(args.td, args.sd, (args.cf).split("_"), (args.tf).split("_"), comp_hidden_layer_neurons, tar_hidden_layer_neurons, args.lr, args.bs,
-                               args.model, args.do, args.en, args.epoch, args.sf, args.tlf, args.ff, args.fl, args.ss,
-                               args.ip, args.op, args.et)
+        training_test(args.td, args.sd, args.cf.split("-"), comp_hidden_layer_neurons, args.lr, args.bs,
+                      args.model, args.do, args.en, args.epoch, args.sf, args.tlf, args.ff, args.fl, args.ss,
+                      args.ip, args.op, args.setting, args.nc)
+    elif args.setting == 4:
+        training(args.td, args.sd, args.cf.split("-"), comp_hidden_layer_neurons, args.lr, args.bs,
+                 args.model, args.do, args.en, args.epoch, args.sf, args.tlf, args.ff, args.fl, args.ss,
+                 args.ip, args.et, args.nc)
+    elif args.setting == 5:
+        extract_features_train_test(args.td, args.sd, args.cf.split("-"), comp_hidden_layer_neurons, args.lr,
+                                    args.bs, args.model, args.do, args.en, args.epoch, args.sf, args.tlf, args.ff,
+                                    args.fl, args.el, args.ss,
+                                    args.ip, args.setting, args.nc)
     else:
         if args.train == 1:
-            five_fold_training(args.td, args.sd, (args.cf).split("_"), (args.tf).split("_"), comp_hidden_layer_neurons, tar_hidden_layer_neurons, args.lr, args.bs,
+            five_fold_training(args.td, args.sd, args.cf.split("-"), comp_hidden_layer_neurons, args.lr, args.bs,
                                args.model, args.do, args.en, args.epoch, args.sf, args.tlf, args.ff, args.fl, args.ss,
-                               args.ip, args.op, args.setting)
+                               args.ip, args.op, args.setting, args.nc)
         else:
-            extract_features(args.td, args.sd, (args.cf).split("_"), (args.tf).split("_"), comp_hidden_layer_neurons, tar_hidden_layer_neurons, args.lr, args.bs,
-                         args.model, args.do, args.en, args.epoch, args.sf, args.tlf, args.ff, args.fl, args.el, args.ss,
-                         args.ip, args.setting)
+            extract_features(args.td, args.sd, args.cf.split("-"), comp_hidden_layer_neurons, args.lr, args.bs,
+                             args.model, args.do, args.en, args.epoch, args.sf, args.tlf, args.ff, args.fl, args.el,
+                             args.ss, args.ip, args.setting)
