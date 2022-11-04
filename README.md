@@ -23,10 +23,6 @@
 
 ## How to re-produce performance comparison results for MDeePred and other methods 
 * Clone the Git Repository
-* Download the target matrices and copy them under **target_feature_vectors** of the corresponding dataset
-    * Download target features for Davis and Filtered Davis [here](https://www.dropbox.com/s/74aaln7nzoqfjww/davis_filtered_davis_target_feature_vectors_LEQ500.tar.gz?dl=0)
-    * Download target features for PDBBind Refined [here](https://www.dropbox.com/s/0o90ophu8w6fudr/pdbbind_refined_target_feature_vectors_LEQ500.tar.gz?dl=0)
-    * Download target features for Kinome Dataset [here](https://www.dropbox.com/s/14l647ibeomfwgm/kinome_target_feature_vectors_LEQ1000.zip?dl=0)
 
 * Run the below commands for each dataset
 
@@ -75,29 +71,23 @@
 #### To create transporter small dataset with size 6
 ```
 python createTrainingandTest.py --d transporter --ss 6
-
 ```
 #### To obtain baseline peformance results for the same dataset
 ```
 python baseline_training.py --setting 2 --tlf 0 --td transporter --ss 6 --en 0 --sf 1
-
 ```
-
 #### To obtain scratch performance result for the same dataset
 ```
 python main_training.py --setting 3 --epoch 50 --ss 6 --en 0 --tlf 0 --sf 1 --td transporter
 ```
-
 #### To extract the output of the first hidden layer (--el 2 for the output of the second hidden layer )
 ```
 python main_training.py --setting 5 --train 0 --epoch 50 --ss 6 --en 0 --el 1 --tlf 1 --sf 1 --td transporter --sd kinase --nc 2
 ```
-
 #### To obtain shallow classifier performance result using the output of the first hidden layer (--el 2 for the output of the second hidden layer )
 ```
 python baseline_training.py --setting 2 --tlf 1 --el 1 --td transporter --sd kinase --ss 6 --en 0 --sf 1
 ```
-
 #### To obtain full fine-tuning performance result for the same dataset
 ```
 python main_training.py --setting 3 --epoch 50 --ss 6 --en 0 --tlf 1 --sf 1 --td transporter --sd kinase --nc 2
@@ -106,7 +96,6 @@ python main_training.py --setting 3 --epoch 50 --ss 6 --en 0 --tlf 1 --sf 1 --td
 ```
 python main_training.py --setting 3 --epoch 50 --ss 6 --en 0 --ff 1 --fl 1 --tlf 1 --ff 1 --sf 1 --td transporter --sd kinase --nc 2
 ```
-
 #### Output of the scripts
 **main_training.py** creates a folder under named **experiment_name** (given as argument **--en**) under **result_files** folder. Two files are created under **results_files/<experiment_name>**: **predictions.txt** contains predictions for independent test dataset. The other one is named as **performance_results.txt** which contains the best performance results for each fold (if setting-1 is chosen) or for the test dataset (if setting-2 is chosen). Sample output files for Davis dataset is given under **results_files/davis_dataset_my_experiment**.
 
