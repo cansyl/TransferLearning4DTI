@@ -20,13 +20,8 @@ parser.add_argument(
     metavar='SS',
     help='subset size (default: 10)')
 
-parser.add_argument(
-    # '--input-path`',
-    '--ip',
-    type=str,
-    default="/home/adalkiran/PycharmProjects/mainProteinFamilyClassification",
-    metavar='IP',
-    help='input path (default: /home/adalkiran/PycharmProjects/mainProteinFamilyClassification)')
+cwd = os.getcwd()
+training_files_path = "{}TransferLearning4DTI/training_files".format(cwd.split("TransferLearning4DTI")[0])
 
 
 def read_file_return_total_line(filename):
@@ -59,7 +54,6 @@ def get_active_inactive_index_lst(filename, flag, train_indexes):
 if __name__ == '__main__':
     args = parser.parse_args()
     print(args)
-    training_files_path = "{}/{}".format(args.ip, "training_files/")
     training_dataset_path = "{}/{}".format(training_files_path, args.d)
 
     training_dataset_size = read_file_return_total_line(training_dataset_path + "/comp_targ_binary.tsv")

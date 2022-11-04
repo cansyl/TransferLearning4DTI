@@ -3,7 +3,34 @@ from torch.utils.data import Dataset
 import torch
 import numpy as np
 from torch.utils.data.sampler import SubsetRandomSampler, SequentialSampler
-from compundFeatureVectoreGenerator import read_smiles, get_ecfp4_features_given_smiles_dict
+from rdkit import Chem
+from rdkit.Chem import AllChem
+import json
+
+
+def get_ecfp4_features_given_smiles_dict(smiles_dict):
+
+    compound_smile_dict = {}
+    for comp_id in smiles_dict:
+        m = Chem.MolFromSmiles(smiles_dict[comp_id])
+        fp = AllChem.GetMorganFingerprintAsBitVect(m, 2, nBits=1024)
+        feature_list = []
+        for dim in fp:
+            feature_list.append(float(dim))
+        compound_smile_dict[comp_id] = feature_list
+
+    return compound_smile_dict
+
+
+def read_smiles(file_name):
+    compound_smile_dict = {}
+    with open(file_name) as f:
+        lines = f.readlines()
+        for line in lines:
+            compound_smile_pair = line.rstrip('\n').split("\t")
+            compound_smile_dict[compound_smile_pair[0]] = compound_smile_pair[1]
+
+    return compound_smile_dict
 
 
 def get_target_dict_feature_vector(training_dataset_path, feature_lst):
@@ -85,9 +112,9 @@ class BioactivityDataset(Dataset):
 
     def __getitem__(self, idx):
         row = self.training_dataset.iloc[idx]
-        tar_id, comp_id, biact_val = str(row[0]), str(row[1]), str(row[2])
+        tar_id, comp_id, bio_act_val = str(row[0]), str(row[1]), str(row[2])
         comp_feats = self.dict_compound_features[comp_id]
-        label = torch.tensor(float(biact_val)).type(torch.FloatTensor)
+        label = torch.tensor(float(bio_act_val)).type(torch.FloatTensor)
 
         return comp_feats, label, comp_id, tar_id
 
@@ -109,26 +136,14 @@ class BioactivityTestDataset(Dataset):
         return comp_feats, comp_id
 
 
-def get_test_val_folds_train_data_loader(training_dataset_path, comp_feature_list, batch_size, subset_size, subset_flag,
-                                         setting):
-    import json
-    if setting == 1:
-        compound_target_pair_dataset = "comp_targ_binary.tsv"
-        if subset_flag == 0:
-            folds = json.load(open(training_dataset_path + "/data/folds/train_fold_setting1.txt"))
-        else:
-            folds = json.load(
-                open(training_dataset_path + "/dataSubset" + str(subset_size) + "/folds/train_fold_setting1.txt"))
-        test_indices = json.load(open(training_dataset_path + "/data/folds/test_fold_setting1.txt"))
-    elif setting == 2:
-        compound_target_pair_dataset = "comp_targ_binary_2.tsv"
-
-        if subset_flag == 0:
-            folds = json.load(open(training_dataset_path + "/data/folds/train_fold_setting2.txt"))
-        else:
-            folds = json.load(
-                open(training_dataset_path + "/dataSubset" + str(subset_size) + "/folds/train_fold_setting2.txt"))
-        test_indices = json.load(open(training_dataset_path + "/data/folds/test_fold_setting2.txt"))
+def get_test_val_folds_train_data_loader(training_dataset_path, comp_feature_list, batch_size, subset_size, subset_flag):
+    compound_target_pair_dataset = "comp_targ_binary.tsv"
+    if subset_flag == 0:
+        folds = json.load(open(training_dataset_path + "/data/folds/train_fold_setting1.txt"))
+    else:
+        folds = json.load(
+            open(training_dataset_path + "/dataSubset" + str(subset_size) + "/folds/train_fold_setting1.txt"))
+    test_indices = json.load(open(training_dataset_path + "/data/folds/test_fold_setting1.txt"))
 
     bioactivity_dataset = BioactivityDataset(training_dataset_path, compound_target_pair_dataset, comp_feature_list)
     loader_fold_dict = dict()
@@ -197,35 +212,15 @@ def get_train_data_loader(training_dataset_path, comp_feature_list, batch_size, 
     return train_loader, external_test_loader
 
 
-def get_train_test_train_data_loader(training_dataset_path, comp_feature_list, batch_size, subset_size, subset_flag,
-                                     setting):
-    import json
-    if setting == 3 or setting == 5:
-        compound_target_pair_dataset = "comp_targ_binary.tsv"
-        if subset_flag == 0:
-            folds = json.load(open(training_dataset_path + "/data/folds/train_fold_setting1.txt"))
-        else:
-            folds = json.load(
-                open(training_dataset_path + "/dataSubset" + str(subset_size) + "/folds/train_fold_setting1.txt"))
-        test_indices = json.load(open(training_dataset_path + "/data/folds/test_fold_setting1.txt"))
-    elif setting == 4:
-        compound_target_pair_dataset = "comp_targ_binary_2.tsv"
+def get_train_test_train_data_loader(training_dataset_path, comp_feature_list, batch_size, subset_size, subset_flag):
 
-        if subset_flag == 0:
-            folds = json.load(open(training_dataset_path + "/data/folds/train_fold_setting2.txt"))
-        else:
-            folds = json.load(
-                open(training_dataset_path + "/dataSubset" + str(subset_size) + "/folds/train_fold_setting2.txt"))
-        test_indices = json.load(open(training_dataset_path + "/data/folds/test_fold_setting2.txt"))
-    elif setting == 6 or setting == 7:
-        compound_target_pair_dataset = "comp_targ_binary_3.tsv"
-
-        if subset_flag == 0:
-            folds = json.load(open(training_dataset_path + "/data/folds/train_fold_setting1.txt"))
-        else:
-            folds = json.load(
-                open(training_dataset_path + "/dataSubset" + str(subset_size) + "/folds/train_fold_setting1.txt"))
-        test_indices = json.load(open(training_dataset_path + "/data/folds/test_fold_setting1.txt"))
+    compound_target_pair_dataset = "comp_targ_binary.tsv"
+    if subset_flag == 0:
+        folds = json.load(open(training_dataset_path + "/data/folds/train_fold_setting1.txt"))
+    else:
+        folds = json.load(
+            open(training_dataset_path + "/dataSubset" + str(subset_size) + "/folds/train_fold_setting1.txt"))
+    test_indices = json.load(open(training_dataset_path + "/data/folds/test_fold_setting1.txt"))
 
     bioactivity_dataset = BioactivityDataset(training_dataset_path, compound_target_pair_dataset, comp_feature_list)
     train_indices = []
