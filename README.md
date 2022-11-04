@@ -31,51 +31,82 @@
 * Run the below commands for each dataset
 
 #### Explanation of Parameters
-**--chln**: number of neurons in compound hidden layers (default: 1024_1024)
-
-**--tlnaf**: number of neurons after flattening target conv layers (default: 256)
-
-**--lhln**: number of neurons in last two hidden layers before output layer (default: 1024_1024)
+**--chln**: number of neurons in compound hidden layers (default: 1200_300)
 
 **--lr**:learning rate (default: 0.0001)
 
-**--bs**: batch size (default: 32)
+**--bs**: batch size (default: 256)
 
-**--td**: the name of the training dataset (default: Davis)
+**--td**: the name of the target dataset (default: transporter)
 
-**--cf**: compound features separated by underscore character (default: ecfp4)
+**--sd**: the name of the source dataset (default: kinase)
 
-**--tf**: target features separated by underscore character (default: sequencematrix500_ZHAC000103LEQ500_GRAR740104LEQ500_SIMK990101LEQ500_blosum62LEQ500)
-
-**--setting**: Determines whether to perform  5-fold XV (setting-1) or train-validation-test (setting 2) (default:setting1)
-
-**--dropout**: dropout rate (default: 0.1)
-
-**--epoch**: number of epochs (default: 200)
+**--do**: dropout rate (default: 0.1)
 
 **--en**: the name of the experiment (default: my_experiment)
 
-#### For Davis Dataset
+**--model**: model name (default: fc_2_layer)
+
+**--epoch**: number of epochs (default: 100)
+
+**--sf**: subset flag (default: 0)
+
+**--tlf**: transfer learning flag (default: 0)
+
+**--ff**: freeze flag (default: 0)
+
+**--fl**: hidden layer to be frozen (default: 1)
+
+**--el**: layer to be extracted (default: 0)
+
+**--ss**: subset size (default: 10)
+
+**--cf**: compound features separated by underscore character (default: chemprop)
+
+**--setting**: Determines the setting (1: train_val_test, 2:extract layer train_val_test, 3:training_test, 4:only training, 5:extract layer train and test) (default: 1)
+
+**--et**: external test dataset (default: -)
+
+**--nc**: number of result classes (default: 2)
+
+**--train**: (1) train or (0) extract features(default: 1)
+
+
+#### To create transporter small dataset with size 6
 ```
-python main_training.py --chln 1024_1024 --tlnaf 256 --lhln 1024_1024 --lr 0.0001 --bs 32 --td Davis --cf ecfp4 --tf sequencematrix500_ZHAC000103LEQ500_GRAR740104LEQ500_SIMK990101LEQ500_blosum62LEQ500 --setting 1 --dropout 0.1 --epoch 200 --en davis_dataset_retraining
+python createTrainingandTest.py --d transporter --ss 6
+
 ```
-#### For Filtered Davis Dataset
+#### To obtain baseline peformance results for the same dataset
 ```
-python main_training.py --chln 1024_1024 --tlnaf 128 --lhln 1024_512 --lr 0.0001 --bs 32 --td Davis_Filtered --cf ecfp4 --tf sequencematrix500_ZHAC000103LEQ500_GRAR740104LEQ500_SIMK990101LEQ500_blosum62LEQ500  --setting 1 --dropout 0.1 --epoch 200 --en davis_filtered_dataset_retraining
+python baseline_training.py --setting 2 --tlf 0 --td transporter --ss 6 --en 0 --sf 1
+
 ```
 
-#### For PDBBind Refined Dataset
+#### To obtain scratch performance result for the same dataset
 ```
-python main_training.py --chln 1024_1024 --tlnaf 128 --lhln 1024_512 --lr 0.0001 --bs 32 --td Davis_Filtered --cf ecfp4 --tf sequencematrix500_ZHAC000103LEQ500_GRAR740104LEQ500_SIMK990101LEQ500_blosum62LEQ500  --setting 2 --dropout 0.25 --epoch 200 --en pdbbind_refined_dataset_retraining
+python main_training.py --setting 3 --epoch 50 --ss 6 --en 0 --tlf 0 --sf 1 --td transporter
 ```
 
-#### For Kinome Dataset
+#### To extract the output of the first hidden layer (--el 2 for the output of the second hidden layer )
 ```
-python main_training.py --chln 1024_1024 --tlnaf 256 --lhln 1024_512 --lr 0.0001 --bs 32 --td Davis_Filtered --cf ecfp4 --tf sequencematrix500_ZHAC000103LEQ500_GRAR740104LEQ500_SIMK990101LEQ500_blosum62LEQ500  --setting 2 --dropout 0.1 --epoch 200 --en kinome_dataset_retraining
+python main_training.py --setting 5 --train 0 --epoch 50 --ss 6 --en 0 --el 1 --tlf 1 --sf 1 --td transporter --sd kinase --nc 2
+```
+
+#### To obtain shallow classifier performance result using the output of the first hidden layer (--el 2 for the output of the second hidden layer )
+```
+python baseline_training.py --setting 2 --tlf 1 --el 1 --td transporter --sd kinase --ss 6 --en 0 --sf 1
+```
+
+#### To obtain full fine-tuning performance result for the same dataset
+```
+python main_training.py --setting 3 --epoch 50 --ss 6 --en 0 --tlf 1 --sf 1 --td transporter --sd kinase --nc 2
+```
+#### To obtain fine-tuning with freezing layer 1 performance result for the same dataset (--fl 2 with freezing layer 2 )
+```
+python main_training.py --setting 3 --epoch 50 --ss 6 --en 0 --ff 1 --fl 1 --tlf 1 --ff 1 --sf 1 --td transporter --sd kinase --nc 2
 ```
 
 #### Output of the scripts
 **main_training.py** creates a folder under named **experiment_name** (given as argument **--en**) under **result_files** folder. Two files are created under **results_files/<experiment_name>**: **predictions.txt** contains predictions for independent test dataset. The other one is named as **performance_results.txt** which contains the best performance results for each fold (if setting-1 is chosen) or for the test dataset (if setting-2 is chosen). Sample output files for Davis dataset is given under **results_files/davis_dataset_my_experiment**.
-#### Pre-trained Models
-* PyTorch state dictionary for pretrained kinase model is available in [here](https://www.dropbox.com/s/92bmvglk5p5ln1z/pretrained_kinome_model_state_dict.pth?dl=0).
-* PyTorch state dictionary for pretrained GPCR model is available in [here](https://www.dropbox.com/s/7qsez2s5dthi5qk/pretrained_gpcr_model_state_dict.pth?dl=0).
+
