@@ -1,7 +1,5 @@
 import os
 import warnings
-from itertools import count
-
 from models import get_model
 from evaluation_metrics import prec_rec_f1_acc_mcc
 from data_processing import get_test_val_folds_train_data_loader, get_train_test_train_data_loader
@@ -152,7 +150,8 @@ def extract_features(target_dataset, source_dataset, comp_feature_list, comp_hid
 
         model = get_model(model_nm, comp_feature_size, comp_hidden_lst, dropout)
         if tl_flag == 1:
-            model.load_state_dict(torch.load("{}/{}/best_state_dict_{}.pth".format(trained_models_path, source_dataset, comp_feature_list[0]),
+            model.load_state_dict(torch.load("{}/{}/best_state_dict_{}.pth".format(trained_models_path,
+                                                                                             source_dataset, comp_feature_list[0]),
                                              map_location=torch.device(device)))
         model.to(device)
         criterion = nn.BCEWithLogitsLoss()
@@ -296,7 +295,8 @@ def extract_features_train_test(target_dataset, source_dataset, comp_feature_lis
 
     model = get_model(model_nm, comp_feature_size, comp_hidden_lst, num_classes, dropout)
     if tl_flag == 1:
-        model.load_state_dict(torch.load("{}/{}/best_state_dict_{}.pth".format(trained_models_path, source_dataset, comp_feature_list[0]),
+        model.load_state_dict(torch.load("{}/{}/best_state_dict_{}.pth".format(trained_models_path,
+                                                                                         source_dataset, comp_feature_list[0]),
                                          map_location=torch.device(device)))
     model.to(device)
     if num_classes == 2:

@@ -54,13 +54,14 @@ def get_compound_dict_feature_vector(training_dataset_path, feature_lst):
     features_dict = dict()
     feature_fl_path = "{}/{}.tsv".format(feat_vec_path, feature_lst[0])
 
-    with open(feature_fl_path) as f:
-        for line in f:
-            line = line.split("\n")[0]
-            line = line.split("\t")
-            compound_id = line[0]
-            feat_vec = line[1:]
-            features_dict[compound_id] = torch.tensor(np.asarray(feat_vec, dtype=float)).type(torch.FloatTensor)
+    if feature_lst[0] == "ecfp4" or feature_lst[0] == "chemprop":
+        with open(feature_fl_path) as f:
+            for line in f:
+                line = line.split("\n")[0]
+                line = line.split("\t")
+                compound_id = line[0]
+                feat_vec = line[1:]
+                features_dict[compound_id] = torch.tensor(np.asarray(feat_vec, dtype=float)).type(torch.FloatTensor)
 
     return features_dict
 
@@ -188,10 +189,12 @@ def get_train_data_loader(training_dataset_path, comp_feature_list, batch_size, 
 
     bioactivity_dataset = BioactivityDataset(training_dataset_path, compound_target_pair_dataset, comp_feature_list)
     train_indices = []
-    for fold_id in range(len(folds)):
-        train_indices.extend(folds[fold_id])
-    train_indices.extend(test_indices)
-
+    if folds == 5:
+        for fold_id in range(len(folds)):
+            train_indices.extend(folds[fold_id])
+        train_indices.extend(test_indices)
+    else:
+        train_indices = folds
     train_sampler = SequentialSampler(train_indices)
 
     train_loader = torch.utils.data.DataLoader(bioactivity_dataset, batch_size=batch_size,

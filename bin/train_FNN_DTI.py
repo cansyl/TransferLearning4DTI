@@ -487,9 +487,10 @@ def training(target_dataset, source_dataset, comp_feature_list, comp_hidden_lst,
 
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     print(device)
-    comp_feature_size = 300
     if comp_feature_list[0] == "ecfp4":
         comp_feature_size = 1024
+    elif comp_feature_list[0] == "chemprop":
+        comp_feature_size = 300
 
     model = get_model(model_nm, comp_feature_size, comp_hidden_lst, num_classes, dropout)
     if tl_flag == 1:
