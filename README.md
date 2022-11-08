@@ -70,7 +70,7 @@
 
 #### To create transporter small dataset with size 6
 ```
-python createTrainingandTest.py --d transporter --ss 6
+python create_small_dataset.py --d transporter --ss 6
 ```
 #### To obtain baseline peformance results for the same dataset
 ```
