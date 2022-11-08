@@ -115,11 +115,11 @@ def get_external_test_results(model, data_loader, device, model_nm):
     return results_dict
 
 
-def save_best_model_predictions(trained_models_path, experiment_name, model, fold):
+def save_best_model_predictions(trained_models_path, experiment_name, model, feature):
     if not os.path.exists(os.path.join(trained_models_path, experiment_name)):
         os.makedirs(os.path.join(trained_models_path, experiment_name))
     torch.save(model.state_dict(),
-               "{}/{}/best_val-state_dict-fold-{}.pth".format(trained_models_path, experiment_name, fold))
+               "{}/{}/best_state_dict_{}.pth".format(trained_models_path, experiment_name, feature))
 
 
 def find_optimal_cutoff(target, predicted):
@@ -199,13 +199,13 @@ def five_fold_training(target_dataset, source_dataset, comp_feature_list, comp_h
             if source_dataset == "multi":
                 multi_model = get_model(model_nm, comp_feature_size, comp_hidden_lst, 5, dropout)
                 multi_model.load_state_dict(
-                    torch.load("{}/{}/best_val-state_dict-fold-{}.pth".format(trained_models_path, source_dataset, 0),
+                    torch.load("{}/{}/best_state_dict_{}.pth".format(trained_models_path, source_dataset, comp_feature_list[0]),
                                map_location=torch.device(device)))
                 multi_model.layer_out = nn.Linear(comp_hidden_lst[-1], 1)
                 model = multi_model
             else:
                 model.load_state_dict(
-                    torch.load("{}/{}/best_val-state_dict-fold-{}.pth".format(trained_models_path, source_dataset, 0),
+                    torch.load("{}/{}/best_state_dict_{}.pth".format(trained_models_path, source_dataset, comp_feature_list[0]),
                                map_location=torch.device(device)))
 
         model.to(device)
@@ -289,7 +289,7 @@ def five_fold_training(target_dataset, source_dataset, comp_feature_list, comp_h
                 best_val_score_epoch = epoch
                 best_model = model
                 if subset_flag == 0:
-                    save_best_model_predictions(trained_models_path, target_dataset, best_model, fold)
+                    save_best_model_predictions(trained_models_path, target_dataset, best_model, comp_feature_list[0])
 
             if test_perf_dict["MCC"] > best_test_mcc_score:
                 best_test_mcc_score = test_perf_dict["MCC"]
@@ -374,7 +374,7 @@ def training_test(target_dataset, source_dataset, comp_feature_list, comp_hidden
     model = get_model(model_nm, comp_feature_size, comp_hidden_lst, num_classes, dropout)
     if tl_flag == 1:
         model.load_state_dict(
-            torch.load("{}/{}/best_val-state_dict-fold-{}.pth".format(trained_models_path, source_dataset, 5),
+            torch.load("{}/{}/best_state_dict_{}.pth".format(trained_models_path, source_dataset, comp_feature_list[0]),
                        map_location=torch.device(device)))
     model.to(device)
     if num_classes == 2:
@@ -487,14 +487,13 @@ def training(target_dataset, source_dataset, comp_feature_list, comp_hidden_lst,
 
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     print(device)
+    comp_feature_size = 300
     if comp_feature_list[0] == "ecfp4":
         comp_feature_size = 1024
-    elif comp_feature_list[0] == "chemprop":
-        comp_feature_size = 300
 
     model = get_model(model_nm, comp_feature_size, comp_hidden_lst, num_classes, dropout)
     if tl_flag == 1:
-        model.load_state_dict(torch.load("{}/{}/best_val-state_dict-fold-{}.pth".format(trained_models_path, source_dataset, 5),
+        model.load_state_dict(torch.load("{}/{}/best_state_dict_{}.pth".format(trained_models_path, source_dataset, comp_feature_list[0]),
                                          map_location=torch.device(device)))
     model.to(device)
     if num_classes == 2:
@@ -559,7 +558,7 @@ def training(target_dataset, source_dataset, comp_feature_list, comp_hidden_lst,
                 results_dict = get_external_test_results(model, external_test_loader, device, model_nm)
 
         if epoch == n_epoch:
-            save_best_model_predictions(trained_models_path, target_dataset, model, 5)
+            save_best_model_predictions(trained_models_path, target_dataset, model, comp_feature_list[0])
 
             if external_file != "-":
                 sorted_dict = dict(sorted(results_dict.items(), key=lambda item: item[1]))
