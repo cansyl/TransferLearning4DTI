@@ -21,7 +21,7 @@
 #### [Numpy 1.22.4](https://pypi.python.org/pypi/numpy/1.22.4)
 
 
-## How to re-produce performance comparison results for MDeePred and other methods 
+## How to re-produce performance comparison results for TransferLearning4DTI 
 * Clone the Git Repository
 
 * Run the below commands for each dataset
