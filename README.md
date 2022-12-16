@@ -13,6 +13,8 @@
     * **protease** contains training data points, features, data splits for Protease dataset. **compound_feature_vectors/ecfp4.tsv** includes ecfp4 features of ligands. **compound_feature_vectors/chemprop.tsv** includes chemprop features of ligands. **comp_targ_binary.tsv** is a csv file where each line is formatted as <compound_id>,<target_id>,<active/inactive>. 
     * **transporter** contains training data points, features, data splits for Kinase dataset based on Setting-2. **compound_feature_vectors/ecfp4.tsv** includes ecfp4 features of ligands. **compound_feature_vectors/chemprop.tsv** includes chemprop features of ligands. **comp_targ_binary.tsv** is a csv file where each line is formatted as <compound_id>,<target_id>,<active/inactive>. 
 
+ * Download the remaining training files [here](https://drive.google.com/drive/folders/1HL8xkWhF8qkRaZleZsp1QW2K1dWYxItd?usp=share_link)
+
 ## Development and Dependencies
 
 #### [PyTorch 1.12.1](https://pytorch.org/get-started/previous-versions/)
@@ -20,7 +22,7 @@
 #### [Sklearn 1.1.2](https://scikit-learn.org/1.1/install.html)
 #### [Numpy 1.22.4](https://pypi.python.org/pypi/numpy/1.22.4)
 #### [RDKit 2022.9.1](https://www.rdkit.org/docs/Install.html)
-
+#### [Chemprop](https://github.com/chemprop/chemprop#option-1-installing-from-pypi)
 
 ## How to re-produce performance comparison results for TransferLearning4DTI 
 * Clone the Git Repository
