@@ -138,7 +138,7 @@ chemprop_fingerprint --test_path input/test_smiles_class.csv --checkpoint_path c
 ```
 #### convert the output of the chemprop to the right format you can run the following command (you should have a file called test_id_smiles.csv and it should contain the id and smiles for each compound)
 ```
-python chemprop_convert.py --isf input/test_id_smiles.csv --tf output/test_smiles_chemprop.csv
+python chemprop_test_convert.py --tis input/test_id_smiles.csv --tsc output/test_smiles_chemprop.csv
 ```
 #### get predictions for your test dataset without training you can run the following command
 ```
