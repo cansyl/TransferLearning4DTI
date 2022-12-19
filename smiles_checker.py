@@ -6,13 +6,13 @@ warnings.filterwarnings(action='ignore')
 
 parser = argparse.ArgumentParser(description='smiles checker arguments')
 
-
 parser.add_argument(
     '--sf',
     type=str,
     default="input/test_id_smiles.csv",
     metavar='SF',
     help='the name of smiles file (default: input/test_id_smiles.csv)')
+
 
 def read_smiles(FileName):
     smilesCompoundDict = {}
@@ -27,6 +27,7 @@ def read_smiles(FileName):
             smilesCompoundDict[compound_smile_pair[0]] = compound_smile_pair[1]
 
     return smilesCompoundDict
+
 
 if __name__ == '__main__':
     args = parser.parse_args()
@@ -52,5 +53,8 @@ if __name__ == '__main__':
     if len(invalid_chem_lst) > 0:
         print("The following id(s) have invalid chemistry:", invalid_chem_lst)
 
-    if len(invalid_smiles_lst) > 0:
+    elif len(invalid_smiles_lst) > 0:
         print("The following id(s) have invalid smiles:", invalid_smiles_lst)
+    else:
+        print("1")
+
