@@ -101,8 +101,43 @@ python main_training.py --setting 3 --epoch 50 --ss 6 --en 0 --tlf 1 --sf 1 --td
 ```
 python main_training.py --setting 3 --epoch 50 --ss 6 --en 0 --ff 1 --fl 1 --tlf 1 --ff 1 --sf 1 --td transporter --sd kinase
 ```
+#### Option 2 - Fine-tune your training dataset
+#### extract features using the chemprop tool for your training dataset by running the following command
+**--trainisc**: the name of the training file. it should contains id, smiles and compound columns (default: input/train.csv)
 
-#### Option 2
+**--name**: the name of the your protein or protein family (default: new_family)
+
+**--sc**: the name of the source checkpoint (default: kinase)
+```
+python convert_chemprop_ftune.py --trainisc input/train.csv --name your_family_name --sc kinase
+```
+#### get predictions for your test dataset without training you can run the following command
+```
+python main_training.py --setting 6 --sd kinase --et output/test_smiles_chemprop.tsv --tlf 1
+```
+#### get predictions for your test dataset without training you can run the following command
+```
+python main_training.py --setting 4 --td transporter --sd kinase --et output/test_smiles_chemprop.tsv --tlf 1
+```
+#### Option 3
+#### Get predictions for your test dataset using one of the six pre-trained models following the below steps. (no training, only testing)
+#### extract features using chemprop tool for your test dataset please run the following command (you need to specify one of the six checkpoints, the default option is kinase)
+```
+chemprop_fingerprint --test_path input/test_smiles_class.csv --checkpoint_path chemprop/kinase_checkpoints/model.pt --preds_path output/test_smiles_chemprop.csv
+```
+#### convert the output of the chemprop to the right format you can run the following command (you should have a file called test_id_smiles.csv and it should contain the id and smiles for each compound)
+```
+python chemprop_test_convert.py --tis input/test_id_smiles.csv --tsc output/test_smiles_chemprop.csv
+```
+#### get predictions for your test dataset without training you can run the following command
+```
+python main_training.py --setting 6 --sd kinase --et output/test_smiles_chemprop.tsv --tlf 1
+```
+#### get predictions for your test dataset without training you can run the following command
+```
+python main_training.py --setting 4 --td transporter --sd kinase --et output/test_smiles_chemprop.tsv --tlf 1
+```
+#### Option 4
 #### Fine-tune your training dataset and get predictions for your test dataset using the fine-tuned model (training and testing)
 #### extract features using the chemprop tool for your training dataset please run the following command
 ```
@@ -128,25 +163,6 @@ python main_training.py --setting 4 --td new_family --sd kinase --et output/test
 #### fine-tune with freeze predictions
 ```
 python main_training.py --setting 4 --td new_family --sd kinase --et output/test_smiles_chemprop.tsv --tlf 1 --ff 1 --fl 1
-```
-
-#### Option 3
-#### Get predictions for your test dataset using one of the six pre-trained models following the below steps. (no training, only testing)
-#### extract features using chemprop tool for your test dataset please run the following command (you need to specify one of the six checkpoints, the default option is kinase)
-```
-chemprop_fingerprint --test_path input/test_smiles_class.csv --checkpoint_path chemprop/kinase_checkpoints/model.pt --preds_path output/test_smiles_chemprop.csv
-```
-#### convert the output of the chemprop to the right format you can run the following command (you should have a file called test_id_smiles.csv and it should contain the id and smiles for each compound)
-```
-python chemprop_test_convert.py --tis input/test_id_smiles.csv --tsc output/test_smiles_chemprop.csv
-```
-#### get predictions for your test dataset without training you can run the following command
-```
-python main_training.py --setting 6 --sd kinase --et output/test_smiles_chemprop.tsv --tlf 1
-```
-#### get predictions for your test dataset without training you can run the following command
-```
-python main_training.py --setting 4 --td transporter --sd kinase --et output/test_smiles_chemprop.tsv --tlf 1
 ```
 #### Output of the scripts
 **main_training.py** creates a folder under named **experiment_name** (given as argument **--en**) under **result_files** folder. Two files are created under **results_files/<experiment_name>**: **predictions.txt** contains predictions for independent test dataset. The other one is named as **performance_results.txt** which contains the best performance results for each fold (if setting-1 is chosen) or for the test dataset (if setting-2 is chosen). Sample output files for Davis dataset is given under **results_files/davis_dataset_my_experiment**.
