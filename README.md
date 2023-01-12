@@ -131,7 +131,7 @@ python convert_chemprop_predict.py --testisf input/test.csv --sc kinase
 ```
 python main_training.py --setting 6 --sd kinase --et output/test_chemprop.tsv --tlf 1
 ```
-#### get predictions for your test dataset without training you can run the following command
+#### get predictions for your test dataset by training you can run the following command
 ```
 python main_training.py --setting 4 --td transporter --sd kinase --et output/test_chemprop.tsv --tlf 1
 ```
