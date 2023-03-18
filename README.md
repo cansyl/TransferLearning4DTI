@@ -1,4 +1,4 @@
-# Transfer-Learning
+# Transfer-Learning for Drug-Target Interaction Prediction
 
 
 ## Descriptions of folders and files in the TransferLearning4DTI repository
