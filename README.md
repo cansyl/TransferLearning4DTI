@@ -13,6 +13,8 @@ The source code and datasets are available in this repository. Our web-based ser
 
 <img width="1000" alt="tl4dti_figure2" src="https://user-images.githubusercontent.com/13165170/236622009-fae24eef-5dfd-4a95-9125-8079a4dc743a.png">
 
+**Figure.** Overview of the model training phase. We first trained a source neural network model using the bioactivity dataset of the selected source protein family (Stage I). This pre-trained source model is then used in the context of transfer learning for further trainin (i.e., fine tuning) with a small-sized target bioactivity dataset that belong to another protein family (Stage II). We also trained an FNN having exactly the same configuration from scratch (the reference model), as well as a shallow classifier (base model), using this same target training dataset.
+
 ## Descriptions of folders and files in the TransferLearning4DTI repository
 
 * **bin** folder includes the source code of TransferLearning4DTI.
