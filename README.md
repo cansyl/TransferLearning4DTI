@@ -1,5 +1,17 @@
-# Transfer-Learning for Drug-Target Interaction Prediction
+# Transfer Learning for Drug-Target Interaction Prediction
 
+## Abstract
+
+Motivation
+Utilizing AI-driven approaches for drug–target interaction (DTI) prediction require large volumes of training data which are not available for the majority of target proteins. In this study, we investigate the use of deep transfer learning for the prediction of interactions between drug candidate compounds and understudied target proteins with scarce training data. The idea here is to first train a deep neural network classifier with a generalized source training dataset of large size and then to reuse this pre-trained neural network as an initial configuration for re-training/fine-tuning purposes with a small-sized specialized target training dataset. To explore this idea, we selected six protein families that have critical importance in biomedicine: kinases, G-protein-coupled receptors (GPCRs), ion channels, nuclear receptors, proteases, and transporters. In two independent experiments, the protein families of transporters and nuclear receptors were individually set as the target datasets, while the remaining five families were used as the source datasets. Several size-based target family training datasets were formed in a controlled manner to assess the benefit provided by the transfer learning approach.
+
+Results
+Here, we present a systematic evaluation of our approach by pre-training a feed-forward neural network with source training datasets and applying different modes of transfer learning from the pre-trained source network to a target dataset. The performance of deep transfer learning is evaluated and compared with that of training the same deep neural network from scratch. We found that when the training dataset contains fewer than 100 compounds, transfer learning outperforms the conventional strategy of training the system from scratch, suggesting that transfer learning is advantageous for predicting binders to under-studied targets.
+
+Availability and implementation
+The source code and datasets are available in this repository. Our web-based service containing the ready-to-use pre-trained models is accessible at https://tl4dti.kansil.org.
+
+<img width="1000" alt="tl4dti_figure2" src="https://user-images.githubusercontent.com/13165170/236622009-fae24eef-5dfd-4a95-9125-8079a4dc743a.png">
 
 ## Descriptions of folders and files in the TransferLearning4DTI repository
 
@@ -15,7 +27,7 @@
 
  * Download the remaining training files [here](https://drive.google.com/drive/folders/1HL8xkWhF8qkRaZleZsp1QW2K1dWYxItd?usp=share_link)
 
-## Development and Dependencies
+## Dependencies
 
 #### [PyTorch 1.12.1](https://pytorch.org/get-started/previous-versions/)
 #### [Pandas 1.3.5](https://pandas.pydata.org/pandas-docs/version/1.3.5/getting_started/install.html)
@@ -24,7 +36,8 @@
 #### [RDKit 2022.9.1](https://www.rdkit.org/docs/Install.html)
 #### [Chemprop](https://github.com/chemprop/chemprop#option-1-installing-from-pypi)
 
-## How to re-produce performance comparison results for TransferLearning4DTI 
+## How to re-produce performance comparison results in the TransferLearning4DTI article
+
 * Clone the Git Repository
 
 * Run the below commands for each dataset
