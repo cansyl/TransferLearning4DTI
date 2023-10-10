@@ -82,4 +82,4 @@
 | CHEMBL3989777 | TRIENTINE HYDROCHLORIDE          |
 | CHEMBL2107703 | FENTICONAZOLE NITRATE            |
 
-ISMB proceedings presentation is available here [here](https://drive.google.com/drive/folders/1qoe6JJF38hXkKd8U4sAHJWF_XO-KHWHq?usp=sharing)
+ISMB proceedings presentation is available [here](https://drive.google.com/drive/folders/1qoe6JJF38hXkKd8U4sAHJWF_XO-KHWHq?usp=sharing)
